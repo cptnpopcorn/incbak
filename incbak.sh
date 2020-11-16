@@ -32,12 +32,15 @@ backup_level() {
 	return
 }
 
-source="$(realpath $1)"
-dest="$(realpath $2)"
+source="$1"
+dest="$2"
 levels="$3"
 
 if [ ! -d "$source" ]; then echo "missing source" 1>&2; exit 1; fi
 if [ -z "$dest" ]; then echo "missing destination" 1>&2; exit 1; fi
 [ -z "$levels" ] && levels=8
+
+source="$(realpath $source)"
+dest="$(realpath $dest)"
 
 backup_level "$source" 0
