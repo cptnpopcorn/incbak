@@ -43,6 +43,8 @@ backup_level() {
 	return
 }
 
+shadow=".backup_sync"
+
 backup_root() {
 	local ref="$1"
 	local gendir="$dest.1"
@@ -51,7 +53,11 @@ backup_root() {
 	local nextrev="$((1 - rev))"
 
 	echo "backup $ref to $gendir.$nextrev with hard-links to $target"
-	rsync -a --delete --link-dest="$target" "$ref/" "$gendir.$nextrev/" || exit
+	rsync -aH --no-inc-recursive --delete --delete-after --link-dest="$target" "$ref/" "$gendir.$nextrev/" || exit
+
+	# preserve current source and destination structure as hard-link copies, to identify moved files later
+	rsync -a --delete --link-dest="$ref" --exclude="/$shadow" "$ref/" "$ref/$shadow"
+	rsync -a --delete --link-dest="$gendir.$nextrev" --exclude="/$shadow" "$gendir.$nextrev/" "$gendir.$nextrev/$shadow"
 
 	push_down "0" "$rev" "$target"
 
