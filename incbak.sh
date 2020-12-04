@@ -44,6 +44,7 @@ backup_level() {
 }
 
 shadow=".backup_sync"
+exclude=".backup_exclude"
 
 backup_root() {
 	local ref="$1"
@@ -52,12 +53,14 @@ backup_root() {
 	local rev="${target: -1}"
 	local nextrev="$((1 - rev))"
 
+	local excludefrom="/dev/null"
+	[ -e "$ref/$exclude" ] && excludefrom="$ref/$exclude"
 	echo "backup $ref to $gendir.$nextrev with hard-links to $target"
-	rsync -aH --no-inc-recursive --delete --delete-after --link-dest="$target" "$ref/" "$gendir.$nextrev/" || { echo "Could not create primary backup from $ref to $gendir.$nextrev" 1>&2; exit 5; }
+	rsync -aH --exclude-from="$excludefrom" --no-inc-recursive --delete --delete-after --link-dest="$target" "$ref/" "$gendir.$nextrev/" || { echo "Could not create primary backup from $ref to $gendir.$nextrev" 1>&2; exit 5; }
 
 	# preserve current source and destination structure as hard-link copies, to identify moved files later
-	rsync -a --delete --link-dest="$ref" --exclude="/$shadow" "$ref/" "$ref/$shadow" || { echo "Could not create shadow for $ref" 1>&2; exit 6; }
-	rsync -a --delete --link-dest="$gendir.$nextrev" --exclude="/$shadow" "$gendir.$nextrev/" "$gendir.$nextrev/$shadow" || { echo "Could not create shadow for $gendir.$nextrev" 1>&2; exit 7; }
+	rsync -a --exclude-from="$excludefrom" --delete --link-dest="$ref" --exclude="/$shadow" "$ref/" "$ref/$shadow" || { echo "Could not create shadow for $ref" 1>&2; exit 6; }
+	rsync -a --exclude-from="$excludefrom" --delete --link-dest="$gendir.$nextrev" --exclude="/$shadow" "$gendir.$nextrev/" "$gendir.$nextrev/$shadow" || { echo "Could not create shadow for $gendir.$nextrev" 1>&2; exit 7; }
 
 	push_down "0" "$rev" "$target"
 
