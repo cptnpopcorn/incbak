@@ -57,6 +57,7 @@ backup_root() {
 	[ -e "$ref/$exclude" ] && excludefrom="$ref/$exclude"
 	echo "backup $ref to $gendir.$nextrev with hard-links to $target"
 	rsync -aH --exclude-from="$excludefrom" --no-inc-recursive --delete --delete-after --link-dest="$target" "$ref/" "$gendir.$nextrev/" || { echo "Could not create primary backup from $ref to $gendir.$nextrev" 1>&2; exit 5; }
+	touch "$gendir.$nextrev" # without that, we'll never know when that backup was made
 
 	# preserve current source and destination structure as hard-link copies, to identify moved files later
 	rsync -a --exclude-from="$excludefrom" --delete --link-dest="$ref" --exclude="/$shadow" "$ref/" "$ref/$shadow" || { echo "Could not create shadow for $ref" 1>&2; exit 6; }
