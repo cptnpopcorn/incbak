@@ -79,4 +79,6 @@ levels="$3"
 source="$(realpath $source)"
 dest="$(realpath $dest)"
 
+[ -e $(dirname "$dest") ] || { echo "Destination does not exist" 1>&2; exit 8; }
+
 backup_root "$source"
