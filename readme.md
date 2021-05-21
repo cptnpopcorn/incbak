@@ -17,7 +17,7 @@ For my home NAS, I need a simple backup solution, from the network storage to an
 - only new / changed files are actually copied (others will be hard-linked to the previous revision)
 - files that did not change between revisions do not occupy additional space (by using hard-links)
 ## Backup Revisions
-Revisions are maintained in generations. The first generation is updated for every backup, the second for every second, the third for every eigth etc.
+Revisions are maintained in generations. The first generation is updated for every backup, the second for every second, the third for every fourth etc.
 The naming scheme is ``` destionation.N.X  ``` where N corresponds to the generation / step with ``` N = 1, 2, 4, 8, ... 128 ``` and ``` X = 0 | 1 ``` is just a binary counter to store the last state.
 Example: ``` destination.4.1 ``` will be moved down to generation ``` destionation.8.0 ``` next time it will be updated to ``` destionation.4.0 ```. It will be updated with the contents of 'source' at every 4th backup.
 ## Usage
