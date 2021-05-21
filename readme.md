@@ -23,7 +23,7 @@ Example: ``` destination.4.1 ``` will be moved down to generation ``` destionati
 ## Usage
 is quite simple ``` ./incbak.sh source destination ```
 ### Permanently exclude specific folders or files from backup
-You can create a file named .backup_exclude in the source folder. The contents represent rsync **filter rules** (https://linux.die.net/man/1/rsync) to match files and folders that shall not be backed up.
+You can create a file named .backup_exclude in the source folder. The contents represent [rsync **filter rules**](https://linux.die.net/man/1/rsync "rsync man page") to match files and folders that shall not be backed up.
 ## Acknowledgments
 I found the basic building blocks for the incremental, snapshot-style, rsync-based backup system with detection of moved files in these excellent sources
 - http://www.mikerubel.org/computers/rsync_snapshots/ (incremental rsync backup using hard-links)
