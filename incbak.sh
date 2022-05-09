@@ -76,8 +76,8 @@ levels="$3"
 [ -z "$dest" ] &&  { echo "Missing destination" 1>&2; exit 1; }
 [ -z "$levels" ] && levels=8
 
-source="$(realpath $source)"
-dest="$(realpath $dest)"
+source="$(realpath $source)" || { echo "Source does not exist" 1>&2; exit 4; }
+dest="$(realpath $dest)" || { echo "Destination does not exist" 1>&2; exit 5; }
 
 [ -e $(dirname "$dest") ] || { echo "Destination does not exist" 1>&2; exit 8; }
 
